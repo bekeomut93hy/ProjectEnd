@@ -1,33 +1,32 @@
 import React, { Component } from 'react';
-import Buttonlogin from "./Buttonlogin"
+import LoginByFb from './LoginByFb'
+import LoginBySdt from "./LoginBySdt"
 class LoginTable extends Component {
-    openLogin = () => {
+    state = {
+        loginSdt: false
+    }
+    _closeLogin = () => {
         document.getElementById("logintable").style.display = "none";
         const login = false;
         this.props.onLoginChange(login);
+        this.setState({
+            loginSdt: false
+        })
+    }
+    _logInWithContact = () => {
+        this.setState({
+            loginSdt: true
+        })
     }
     render() {
         return (
             <div id="logintable" className="row">
-                <div id="login" className="mx-auto my-auto text-center col-md-4">
-                    <span onClick={this.openLogin} className="close">&times;</span>
-                    <div className="col-12 my-4">
-                        <img src="https://tinder.com/static/build/80ab7bdae3b4132925e4bcf99b6aa46a.svg" alt="logo" />
-                    </div>
-                    <div className="my-5">
-                        <h3> BẮT ĐẦU </h3>
-                    </div>
-                    <div>
-                        <p> Khi nhấp vào Đăng ký, bạn đồng ý với
-                        <a href="https://xem.vn/"> <span> Điều khoản dịch vụ. </span></a>
-                            Tìm hiểu cách chúng tôi xử lý dữ liệu của bạn trong
-                        <a href="https://xem.vn/"><span> Chính sách quyền riêng tư </span></a>
-                            và cách chúng tôi dùng cookie cũng như công nghệ tương tự trong
-                        <a href="https://xem.vn/"><span> Chính sách cookie của chúng tôi </span></a>
-                        </p>
-                    </div>
-                    <Buttonlogin />
-                </div>
+                {
+                    this.state.loginSdt === false ?
+                        <LoginByFb closeLogin={this._closeLogin} logInWithContact={this._logInWithContact} /> :
+                        <LoginBySdt closeLogin={this._closeLogin} />
+                    }
+
             </div>
         );
     }

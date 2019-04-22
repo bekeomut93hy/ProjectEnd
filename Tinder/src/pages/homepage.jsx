@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Navbar from "../components/homepage/Navbar";
 import Main from "../components/homepage/Main";
-import Login from "../components/homepage/login";
+import Login from "../components/homepage/LoginMobile";
 import LoginTable from "../components/homepage/LoginTable";
 import "../css/homepage.css"
 import CarouselBackground from "../components/homepage/CarouselBackground"
