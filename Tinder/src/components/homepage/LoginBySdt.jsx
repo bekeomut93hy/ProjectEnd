@@ -1,8 +1,72 @@
 import React, { Component } from 'react';
-
+import swal from "sweetalert"
+import Axios from 'axios';
+import { withRouter} from "react-router-dom"
 class LoginContactTable extends Component {
-    handleClick=(e)=>{
-        const sdt = document.getElementById("sdt").value;   
+    handleClick = (e) => {
+        const sdt = document.getElementById("sdt").value;
+        if (sdt === "") {
+            swal({
+                title: "No No No!",
+                text: "Để trống là không được",
+                icon: "info",
+                button: "Làm lại nào",
+            });
+        }
+        Axios({
+            url: "http://localhost:3001/auth/loginSms",
+            withCredentials: true,
+            method: "post",
+            data: {
+                contact: sdt
+            }
+        }).then((res) => {
+            if (res.data.isValid) {
+                swal({
+                    title: "Bậy rồi!",
+                    text: "Số điện thoại chưa được đăng ký",
+                    icon: "error",
+                    button: "Back",
+                });
+            } else if (res.data.isValid === false) {
+                swal({
+                    title: "Bậy rồi!",
+                    text: "Số điện thoại không hợp lệ",
+                    icon: "error",
+                    button: "Back",
+                });
+            }
+            else {
+                swal({
+                    title: "OK",
+                    text: "Vui lòng nhập mã OTP",
+                    content: "input",
+                    icon: "info",
+                    button: "Let's go",
+                }).then((code) => {
+                    Axios({
+                        url: "http://localhost:3001/auth/checkOTP",
+                        withCredentials: true,
+                        method: "post",
+                        data: {
+                            OTP: code
+                        }
+                    }).then(async res => {
+                        if(res.data.success){
+                            await swal("OTP Correct", "Ấn OK để khám phá nào", "success");
+                            this.props.history.push("/app");
+                        }
+                        else{
+                            swal("OTP Incorrect", "Ấn OK để khám phá nào", "error");
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        })
     }
     render() {
         return (
@@ -24,7 +88,7 @@ class LoginContactTable extends Component {
                             </span>
                     </div>
                     <div className="col-5 sdt mb-4">
-                        <input className="form-control" id="sdt"  type="text"></input>
+                        <input className="form-control" id="sdt" type="text"></input>
                     </div>
                 </div>
                 <button onClick={this.handleClick} className="my-4 text-white btn btn-grad text-center btn-lg col-12 mx-auto register d-md-block"> TIẾP TỤC </button>
@@ -33,4 +97,4 @@ class LoginContactTable extends Component {
     }
 }
 
-export default LoginContactTable;
+export default withRouter(LoginContactTable);

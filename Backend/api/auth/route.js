@@ -53,14 +53,56 @@ router.post("/loginfb", async (req, res) => {
     }
 });
 // Send sms
-router.get("/loginSms", (req, res) => {
-    let contact = req.body.contact;
-    const OTP = Math.floor((Math.random() * 100000) + 1)
-    const from = 'Tinder'
-    const to = `${contact}`
-    const text = `Your code is ${OTP}`
-    nexmo.message.sendSms(from, to, text)
-    res.json({ message: "OK" });
+router.post("/loginSms", async (req, res) => {
+    try {
+        const validcontact = /(84)+(9\d|3[2-8]|8[1-5]|7[0|6|7|8|9])+([0-9]{7})$/;
+        const contact = `84${req.body.contact}`;
+        const user = await UserModel.findOne({ contact: { $eq: contact } }).exec();
+        if (user) {
+            //create session
+            req.session.user = {
+                _id: user._id
+            };
+            req.session.save();
+            // send an OTP
+            const OTP = Math.floor((Math.random() * 100000) + 1);
+            await UserModel.updateOne({ _id: user._id }, { $set: { OTP: OTP } });
+            const from = 'Tinder';
+            const to = `${contact}`;
+            const text = `Your code is ${OTP}`;
+            nexmo.message.sendSms(from, to, text);
+            res.status(201).json({ message: "OK" })
+        }
+        else {
+            if (!contact.match(validcontact)) {
+                res.status(201).json({ message: "Ko ton tai", isValid: false })
+            }
+            else {
+                res.status(201).json({ message: "Ko ton tai", isValid: true })
+            }
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+//check OTP test
+router.get("/checkOTPtest", (req, res) => {
+})
+//check OTP 
+router.post("/checkOTP", async (req, res) => {
+    try {
+        const OTP = req.body.OTP;
+        const user = await UserModel.findById(req.session.user._id).exec();
+        if (user.OTP === OTP) {
+            res.status(200).send({ success: true })
+        }
+        else {
+            res.status(200).send({ success: false })
+        }
+    } catch (error) {
+
+    }
 })
 // Log out
 router.get("/logout", (req, res) => {
@@ -71,4 +113,37 @@ router.get("/logout", (req, res) => {
         res.status(500).end(error.message);
     }
 })
+// Sent An Email to Verify Account
+router.post("/verify-account", async (req, res, next) => {
+    const user = await UserModel.findOne({email: req.body.email}).exec();
+    const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+            user: "dipperpine99@gmail.com",
+            pass: "cancaiten030"
+        }
+    });
+    const mainOption = {
+        from: "Main Sever",
+        to: `${user.email}`,
+        subject: "Xác nhận tài khoản",
+        text: `You recieved message form Main Sever`,
+        html: `<h1> Link xác nhận tài khoản </h1><a href="http://localhost:3000/verify/${
+            user._id
+            }">http://localhost:3000/verify/${user._id}</a> `
+    };
+    transporter.sendMail(mainOption, (err, info) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log(`Message send `);
+    });
+    res.json(user.email);
+});
+// Verify Account
+router.post("/verify/:id", async (req, res, next) => {
+    const userId = req.params.id;
+    await User.findByIdAndUpdate(userId, { $set: { verify: true } });
+    res.status(201).redirect('/');
+});
 module.exports = router;

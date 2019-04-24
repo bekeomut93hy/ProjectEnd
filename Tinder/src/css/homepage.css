@@ -39,13 +39,13 @@ body {
 .login:hover {
   color: white;
 }
-h1 {
+#homepage h1 {
   font-size: 8vw;
   line-height: 1.18;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
   font-weight: 600;
 }
-p {
+#homepage p {
   font-size: 15px;
   font-weight: 200;
   line-height: 25px;

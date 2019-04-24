@@ -16,19 +16,19 @@ class App extends Component {
       method: "get",
     }).then((res) => {
       this.setState({
-        isLoggin : res.data.check
+        isLoggin: res.data.check
       })
     }).catch(err => {
       console.log(err);
     })
   }
-  
+
   render() {
     return (
       <div className="App">
         <BrowserRouter>
           <Route exact path='/' render={() => {
-            return ( this.state.isLoggin === true ? <Redirect to='/app' /> : <Homepage />)
+            return (this.state.isLoggin === true ? <Redirect to='/app' /> : <Homepage />)
           }} />
           <Route path='/app' component={Chatpage} />
         </BrowserRouter>

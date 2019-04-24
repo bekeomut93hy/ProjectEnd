@@ -4,7 +4,6 @@ import Main from "../components/homepage/Main";
 import Login from "../components/homepage/LoginMobile";
 import LoginTable from "../components/homepage/LoginTable";
 import "../css/homepage.css"
-import CarouselBackground from "../components/homepage/CarouselBackground"
 class homepage extends Component {
     state = {
         isLogin: false
@@ -19,15 +18,13 @@ class homepage extends Component {
         this.setState({
             isLogin: login
         });
-        console.log(this.state.isLogin);
     }
     render() {
         return (
-            <div>
-                <div id="homepage" className="container">
+            <div id="homepage">
+                <div  className="container">
                     <Navbar onLoginChange={this._onLoginChange} />
                     <Main onLoginChange={this._onLoginChange} />
-                    {/* <CarouselBackground /> */}
                     <Login />
                 </div>
                 {

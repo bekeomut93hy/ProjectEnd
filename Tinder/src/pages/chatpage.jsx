@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import Card from "../components/chatpage/card"
+import Headsetting from "../components/chatpage/headsetting"
 import Axios from 'axios';
+import "../css/chatpage.css"
 class chatpage extends Component {
         state={
             _id : String,
             name: String,
+            email : String,
+            contact : String,
+            avatarUrl : String
         }
     componentDidMount() {
         Axios({
@@ -16,6 +20,9 @@ class chatpage extends Component {
             this.setState({
                 _id : res.data.user._id,
                 name : res.data.user.name,
+                email : res.data.user.email,
+                contact : res.data.user.contact,
+                avatarUrl : res.data.user.avatarUrl
             })
         }).catch(err=>{
             console.log(err);
@@ -24,8 +31,8 @@ class chatpage extends Component {
     
     render() {
         return (
-            <div>
-                <Card Username={this.state.name}/>
+            <div className="row">
+                <Headsetting id="Headsetting" info={this.state}/>
             </div>
         );
     }
