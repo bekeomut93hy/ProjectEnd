@@ -4,6 +4,7 @@ import { withRouter} from "react-router-dom"
 import axios from 'axios'
 class Buttonlogin extends Component {
     state = {
+        accessToken : '',
         isLoggedIn: false,
         fbId: '',
         name: '',
@@ -11,7 +12,9 @@ class Buttonlogin extends Component {
         avatarUrl: ''
     }
     responseFacebook = async response => {
+        console.log(response);
         this.setState({
+            accessToken : response.accessToken,
             isLoggedIn: true,
             name: response.name,
             fbId: response.id,

@@ -5,6 +5,7 @@ const user = new Schema({
   name: String,
   age: Date,
   introduce: String,
+  accessToken : String,
   sex: String,
   title: String,
   school: String,

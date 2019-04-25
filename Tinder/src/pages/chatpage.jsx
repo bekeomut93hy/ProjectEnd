@@ -32,7 +32,7 @@ class chatpage extends Component {
     render() {
         return (
             <div className="row">
-                <Headsetting id="Headsetting" info={this.state}/>
+                <Headsetting info={this.state}/>
             </div>
         );
     }

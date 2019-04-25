@@ -12,7 +12,7 @@ class navbar extends Component {
     };
     render() {
         return (
-            <div className="row">
+            <div className="row animated fadeIn">
                 <div className="col-7">
                     <ul className="nav nav-fill">
                         <li onClick={this.ChangeLoveMode} className="nav-item">

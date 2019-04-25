@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
+import "../node_modules/animate.css"
+import "../node_modules/font-awesome/css/font-awesome.css"
 //import logo from './logo.svg';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Homepage from './pages/homepage';

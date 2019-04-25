@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
 import SwitchButton from "../common/button"
+import GenderSetting from "./genderSetting"
 class infortable extends Component {
+    componentWillUpdate() {
+        if(this.props.mode  === false){
+            document.getElementById("info").classList.replace("slideInLeft","slideOutLeft");
+        }
+    }
+    
+    genderSetting=()=>{
+        window.alert("abc");
+    }
     render() {
         return (
-            <div>
+            <div id="info" className="animated slideInLeft delay-0.5s faster">
+            <GenderSetting handleChangeSex={this.props.handleChangeSex}/>
             <div className="row">
                 <div className="col-7">
                     <span> Đang tìm kiếm </span>
                 </div>
-                <div className="col-3 ml-auto">
+                <div onClick={this.genderSetting}className="col-3 ml-auto">
                     <span> {this.props.setting.sex} </span>
                 </div>
             </div>
@@ -66,7 +77,7 @@ class infortable extends Component {
                 </div>
                 <div className="col-3 text-center">
                     {
-                        this.props.info.contact == "" ? <span> Thêm số điện thoại </span> : <span>  {this.props.info.contact}</span>
+                        this.props.info.contact === "" ? <span> Thêm số điện thoại </span> : <span>  {this.props.info.contact}</span>
                     }
                 </div>
             </div>

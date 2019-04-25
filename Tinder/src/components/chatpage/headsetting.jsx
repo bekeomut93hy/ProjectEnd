@@ -32,6 +32,11 @@ class headsetting extends Component {
             age: e.target.value
         })
     };
+    _handleChangeSex = (gender)=>{
+        this.setState({
+            sex : gender
+        })
+    }
     _handleLogout = () => {
         Axios({
             url: "http://localhost:3001/auth/logout",
@@ -46,7 +51,7 @@ class headsetting extends Component {
     _handleWatchInfo = () => {
         this.setState({
             infoMode: true
-        })
+        });
     }
     _handleCloseInfo = () => {
         this.setState({
@@ -61,13 +66,14 @@ class headsetting extends Component {
     render() {
         return (
 
-                <div className="col-sm-12 col-md-3">
+                <div id="Headsetting" className="col-sm-12 col-md-3">
+                
                     <div className="row align-items-center ">
                         <div onClick={this._handleCloseInfo} className="col-2">
                         <span  onClick={this._handleCloseInfo} className="close">&times;</span>
                         </div>
                         <div className="col-2">
-                            <img className="rounded-circle" src={this.props.info.avatarUrl} />
+                            <img className="rounded-circle" src={this.props.info.avatarUrl} alt="Unknown"/>
                         </div>
                         <div onClick={this._handleWatchInfo} className="col-8">
                             <h5> Thông tin của tôi </h5>
@@ -79,8 +85,10 @@ class headsetting extends Component {
                         this.state.infoMode === false ? 
                         <Navbar changeMode={this._handleInfoMode} mode={this.state.infoModeMess} /> :
                             <Infotable
+                                mode={this.state.infoMode}
                                 handleLogout={this._handleLogout}
                                 handleChangeAge={this._handleChangeAge}
+                                handleChangeSex={this._handleChangeSex}
                                 info={this.props.info}
                                 setting={this.state}
                             />
