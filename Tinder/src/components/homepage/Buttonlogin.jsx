@@ -9,7 +9,7 @@ class Buttonlogin extends Component {
         fbId: '',
         name: '',
         email: '',
-        avatarUrl: ''
+        avatarUrl: '',
     }
     responseFacebook = async response => {
         console.log(response);
@@ -29,7 +29,6 @@ class Buttonlogin extends Component {
                 userFb: this.state
             }
         }).then((res)=>{
-            console.log(res.data);
             this.props.history.push("/app");
         }).catch(err=>{
             console.log(err);
@@ -51,6 +50,7 @@ class Buttonlogin extends Component {
                     fields="name,email,picture"
                     icon="fa-facebook"
                     cookie="true"
+                    scope="user_birthday, user_gender"
                     onClick={this.componentClicked}
                     callback={this.responseFacebook} />
             )

@@ -9,7 +9,7 @@ const nexmo = new Nexmo({
     apiSecret: 'HG21oDgHWTfVvmnK'
 })
 //setting fb
-
+FB.options({ version: 'v3.2' });
 //get session
 router.get("/getId", async (req, res) => {
     if (req.session.user) {
@@ -31,6 +31,7 @@ router.post("/loginfb", async (req, res) => {
     try {
         const checkUser = await UserModel.findOne({ fbId: req.body.userFb.fbId }).exec();
         if (checkUser) {
+            await UserModel.updateOne({ _id: checkUser._id }, { $set: { accessToken: req.body.userFb.accessToken } });
             req.session.user = {
                 _id: checkUser._id
             }
@@ -38,19 +39,31 @@ router.post("/loginfb", async (req, res) => {
             res.status(201).json({ message: "Exist account" });
         }
         else {
-            const newUser = await UserModel.create({
-                accessToken: req.body.userFb.accessToken,
-                name: req.body.userFb.name,
-                fbId: req.body.userFb.fbId,
-                email: req.body.userFb.email,
-                avatarUrl: req.body.userFb.avatarUrl
-            });
-            console.log(newUser);
-            req.session.user = {
-                _id: newUser._id
-            };
-            req.session.save();
-            res.status(201).json({ message: "Create account" });
+            const acctoken = req.body.userFb.accessToken;
+            FB.setAccessToken(acctoken);
+            FB.api(
+                '/me',
+                'GET',
+                { "fields": "gender,birthday" },
+                async function (response) {
+                    console.log(response);
+                    const newUser = await UserModel.create({
+                        accessToken: req.body.userFb.accessToken,
+                        name: req.body.userFb.name,
+                        fbId: req.body.userFb.fbId,
+                        email: req.body.userFb.email,
+                        avatarUrl: req.body.userFb.avatarUrl,
+                        gender: response.gender,
+                        birthday: response.birthday
+                    });
+                    console.log(newUser);
+                    req.session.user = {
+                        _id: newUser._id
+                    };
+                    req.session.save();
+                    res.status(201).json({ message: "Create account" });
+                }
+            );
         }
     } catch (error) {
         console.log(error);
@@ -152,14 +165,16 @@ router.post("/verify/:id", async (req, res, next) => {
     res.status(201).redirect('/');
 });
 // Get info from Facebook
-router.get("/userfb", (req, res) => {
+router.get("/getAgeandGender", (req, res) => {
     const acctoken = req.body.acctoken;
-    Axios({
-        url: "https://graph.facebook.com/v3.2/me?access_token=EAAFNfuqa1O0BAN4iHTXbkrLxGk9CLL39rDoQwslPj5u3ZAFGJ6tGEWXghZAABlGD0zEGddZCz6G2Pmh2ZClSMPhKfw17nLtuZCnZB7CNxGc5rZBJJMQcj0beyKP2fzOcDlVuobPaV2Akuyfob94RsUmlPikLNkRKiK4wS4sfSdSQg2Cshzp8VZBuIpyVV9fIfys27JsrbolqhwZDZD&debug=all&fields=id,name&format=json&method=get&pretty=0&suppress_http_code=1&transport=cors",
-        method: "get"
-    }).then((response)=>{
-
-        res.json(response.data);
-    })
+    FB.setAccessToken(acctoken);
+    FB.api(
+        '/me',
+        'GET',
+        { "fields": "gender,birthday" },
+        function (response) {
+            res.status(200).json(response);
+        }
+    );
 })
 module.exports = router;

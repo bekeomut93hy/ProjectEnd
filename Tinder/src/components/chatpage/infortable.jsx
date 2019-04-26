@@ -2,25 +2,21 @@ import React, { Component } from 'react';
 import SwitchButton from "../common/button"
 import GenderSetting from "./genderSetting"
 class infortable extends Component {
-    componentWillUpdate() {
-        if(this.props.mode  === false){
-            document.getElementById("info").classList.replace("slideInLeft","slideOutLeft");
-        }
-    }
-    
+   
+ 
     genderSetting=()=>{
         window.alert("abc");
     }
     render() {
         return (
             <div id="info" className="animated slideInLeft delay-0.5s faster">
-            <GenderSetting handleChangeSex={this.props.handleChangeSex}/>
+            <GenderSetting handleChangeGender={this.props.handleChangeGender}/>
             <div className="row">
                 <div className="col-7">
                     <span> Đang tìm kiếm </span>
                 </div>
                 <div onClick={this.genderSetting}className="col-3 ml-auto">
-                    <span> {this.props.setting.sex} </span>
+                    <span> {this.props.setting.gender} </span>
                 </div>
             </div>
             <hr />

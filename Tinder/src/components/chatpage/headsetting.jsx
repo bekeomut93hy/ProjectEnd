@@ -6,24 +6,25 @@ import Axios from "axios"
 class headsetting extends Component {
     state = {
         age: 19,
-        sex: null,
+        gender: null,
         infoMode: false,
         infoModeMess: false
     }
-    componentDidMount() {
-        if (this.props.info.sex === "Nam") {
+    componentWillMount() {
+        console.log(this.props.info);
+        if (this.props.info.gender === "male") {
             this.setState({
-                sex: "Nữ"
+                gender: "Nữ"
             })
         }
-        else if (this.props.info.sex === "Nữ") {
+        else if (this.props.info.gender === "female") {
             this.setState({
-                sex: "Nam"
+                gender: "Nam"
             })
         }
         else {
             this.setState({
-                sex: "Tất cả"
+                gender: "Tất cả"
             })
         }
     }
@@ -32,9 +33,9 @@ class headsetting extends Component {
             age: e.target.value
         })
     };
-    _handleChangeSex = (gender)=>{
+    _handleChangeGender = (gender)=>{
         this.setState({
-            sex : gender
+            gender : gender
         })
     }
     _handleLogout = () => {
@@ -88,7 +89,7 @@ class headsetting extends Component {
                                 mode={this.state.infoMode}
                                 handleLogout={this._handleLogout}
                                 handleChangeAge={this._handleChangeAge}
-                                handleChangeSex={this._handleChangeSex}
+                                handleChangeGender={this._handleChangeGender}
                                 info={this.props.info}
                                 setting={this.state}
                             />

@@ -4,31 +4,32 @@ import Axios from 'axios';
 import "../css/chatpage.css"
 class chatpage extends Component {
         state={
-            _id : String,
-            name: String,
-            email : String,
-            contact : String,
-            avatarUrl : String
+            _id : '',
+            name: '',
+            email : '',
+            contact : '',
+            avatarUrl : '',
+            gender : '',
         }
-    componentDidMount() {
+    componentWillMount() {
         Axios({
             url : "http://localhost:3001/auth/getId",
             withCredentials : true,
             method : "get",
         }).then((res)=>{
-            console.log(res.data);
             this.setState({
                 _id : res.data.user._id,
                 name : res.data.user.name,
                 email : res.data.user.email,
                 contact : res.data.user.contact,
-                avatarUrl : res.data.user.avatarUrl
+                avatarUrl : res.data.user.avatarUrl,
+                gender : res.data.user.gender
             })
         }).catch(err=>{
             console.log(err);
         })
     }
-    
+   
     render() {
         return (
             <div className="row">
