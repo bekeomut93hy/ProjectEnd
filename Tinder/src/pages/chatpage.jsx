@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LeftSide from "../components/chatpage/headsetting"
 import RightSide from "../components/chatpage/rightSide"
+import { BrowserRouter as Router, withRouter } from "react-router-dom"
 import Axios from 'axios';
 import "../css/chatpage.css"
 class chatpage extends Component {
@@ -11,12 +12,12 @@ class chatpage extends Component {
         contact: '',
         avatarUrl: '',
         age: '',
-        introduce : '',
-        school : '',
-        usergender : '',
+        introduce: '',
+        school: '',
+        usergender: '',
         gender: null,
         infoModeMess: null,
-        listItemMatch : null
+        listItemMatch: null
     }
     async componentWillMount() {
         await Axios({
@@ -30,10 +31,10 @@ class chatpage extends Component {
                 _id: res.data.user._id,
                 name: res.data.user.name,
                 email: res.data.user.email,
-                introduce : res.data.user.introduce,
-                school : res.data.user.school,
+                introduce: res.data.user.introduce,
+                school: res.data.user.school,
                 contact: res.data.user.contact,
-                avatarUrl: res.data.user.avatarUrl[0],
+                avatarUrl: res.data.user.avatarUrl,
                 gender: res.data.user.gender,
                 age: current - birth
             })
@@ -45,29 +46,29 @@ class chatpage extends Component {
             url: "http://localhost:3001/auth/getInfoPeople",
             withCredentials: true,
             method: "get",
-        }).then(res=>{
+        }).then(res => {
             this.setState({
-                listItemMatch : res.data
+                listItemMatch: res.data
             })
-        }).catch(err=>{
+        }).catch(err => {
             console.log(err);
         })
         if (this.state.gender === "male" || this.state.gender === "Nam") {
             this.setState({
                 gender: "Nữ",
-                usergender : "Nam"
+                usergender: "Nam"
             })
         }
         else if (this.state.gender === "female" || this.state.gender === "Nữ") {
             this.setState({
                 gender: "Nam",
-                usergender : "Nữ"
+                usergender: "Nữ"
             })
         }
         else {
             this.setState({
                 gender: "Tất cả",
-                usergender : "Không xác định"
+                usergender: "Không xác định"
             })
         }
     }
@@ -98,26 +99,29 @@ class chatpage extends Component {
         })
     }
     _handleGoBack = () => {
-        this.props.history.goBack();
-    }
 
+        this.props.history.goBack();
+
+    }
     render() {
         return (
             <div className="row">
-                <LeftSide
-                    state={this.state}
-                    handleChangeAge={this._handleChangeAge}
-                    handleChangeGender={this._handleChangeGender}
-                    handleGoBack={this._handleGoBack}
-                    handleInfoMode={this._handleInfoMode}
-                    handleLogout={this._handleLogout}
-                />
-                <RightSide
-                    state={this.state}
-                />
+                <Router>
+                    <LeftSide
+                        state={this.state}
+                        handleChangeAge={this._handleChangeAge}
+                        handleChangeGender={this._handleChangeGender}
+                        handleGoBack={this._handleGoBack}
+                        handleInfoMode={this._handleInfoMode}
+                        handleLogout={this._handleLogout}
+                    />
+                    <RightSide
+                        state={this.state}
+                    />
+                </Router>
             </div>
         );
     }
 }
 
-export default chatpage;
+export default withRouter(chatpage);

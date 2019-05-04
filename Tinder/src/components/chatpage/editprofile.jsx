@@ -1,19 +1,97 @@
 import React, { Component } from 'react';
-import Image from "../common/image"
 import Axios from 'axios';
 import UploadImage from "./uploadImage"
+import { storage } from '../firebase/index'
+import { withRouter } from 'react-router-dom'
+import Swal from 'sweetalert2'
+import { async } from '@firebase/util';
 class editprofile extends Component {
-    state={
-        upload : false
+    state = {
+        upload: false,
+        deleteImage : null,
     }
-    handleUpload=()=>{
-        if(this.state.upload === false)
+    _handleAddImage = () => {
+        Swal.fire({
+            title: 'Tải ảnh lên',
+            input: 'file',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Tải ảnh lên',
+            showLoaderOnConfirm: true,
+            preConfirm: async (image) => {
+                const uploadTask = await storage.ref(`images/${this.props.state._id}/${image.name}`).put(image);
+                await storage.ref('images').child(this.props.state._id).child(image.name).getDownloadURL().then(async url => {
+                    console.log(url);
+                    await Axios({
+                        url: "http://localhost:3001/auth/uploadImage",
+                        withCredentials: true,
+                        method: "post",
+                        data : {
+                          url : url
+                        }
+                      }).then(res=>{
+                        console.log("OK");
+                      }).catch(err=>{
+                        console.log(err);
+                    });
+                 })
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            Swal.fire({
+                type: 'success',
+                title: 'Thành công',
+                text: 'Tải ảnh lên thành công',
+              })
+        })
+    }
+    _handleDeleteImage =async (evt) => {
+        await this.setState({
+            deleteImage : evt.target.src
+        })
+        Swal.fire({
+            title: 'Bạn chắc chắn chứ?',
+            text: "Ảnh đã xóa không thể hồi phục",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Đồng ý'
+        }).then(async (result) => {
+            await storage.refFromURL(this.state.deleteImage).delete();
+            await Axios({
+                url: "http://localhost:3001/auth/deleteImage",
+                withCredentials: true,
+                method: "post",
+                data : {
+                  url : this.state.deleteImage
+                }
+            }).then((res)=>{
+                console.log("ok");
+            }).catch(err=>{
+                console.log(err);
+            })
+            console.log(this.state.deleteImage);
+            if (result.value) {
+
+                Swal.fire(
+                    'Đã xóa',
+                    'Ảnh đã xóa thành công',
+                    'success'
+                )
+            }
+        })
+    }
+    handleUpload = () => {
+        if (this.state.upload === false)
             this.setState({
-                upload : true
+                upload: true
             })
         else {
             this.setState({
-                upload : false
+                upload: false
             })
         }
     }
@@ -26,21 +104,39 @@ class editprofile extends Component {
                 gender: document.getElementById("gender").value,
                 school: document.getElementById("school").value,
                 introduce: document.getElementById("introduce").value,
-                _id : this.props.state._id
+                _id: this.props.state._id
             }
         }).then((res) => {
-            console.log("OK")
+            console.log("OK");
+            this.props.history.goBack();
         }).catch(err => {
             console.log(err)
         });
 
     }
     render() {
+        const styleMenu = {
+            borderRadius: '8px',
+            boxShadow: "0 5px 13px 1px rgba(0,0,0,.09)",
+        }
+        const styleItem = {
+            height: "16vh",
+            width: "90%"
+        }
         return (
-            <div>
-                <div className="row">
-                    <Image url={this.props.state.avatarUrl} />
-                    <button onClick={this.handleUpload}className="col-12 btn btn-lg loginfb my-2"> Demo </button>
+            <div style={styleMenu}>
+                <div className="d-flex justify-content-around align-items-center text-center flex-wrap mt-1">
+                    {
+                        Array.from(this.props.state.avatarUrl).map((item, index) => {
+                            return <div className="my-2" onClick={this._handleDeleteImage} key={index} style={{ width: "30%" }}>
+                                <img style={styleItem} src={item} alt="abc" />
+                            </div>
+                        })
+                    }
+                    <div onClick={this._handleAddImage} style={{ width: "30%" }}>
+                        <img style={styleItem} src="http://meetdev.com/assets/img/icon-user-default.png" alt="abc" />
+                    </div>
+             
                 </div>
                 {
                     this.state.upload === true ? <UploadImage userId={this.props.state._id} /> : null
@@ -75,4 +171,4 @@ class editprofile extends Component {
     }
 }
 
-export default editprofile;
+export default withRouter(editprofile);

@@ -27,13 +27,14 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.state);
     return (
       <div className="App">
         <BrowserRouter>
-          <Route exact path='/' render={() => {
+          <Route  exact path='/' render={() => {
             return (this.state.isLoggin === true ? <Redirect to='/app/recs' /> : <Homepage />)
           }} />
-           <Route exact path='/app' render={() => {
+           <Route  exact path='/app' render={() => {
             return (this.state.isLoggin === true ? <Redirect to='/app/recs' /> : <Homepage />)
           }} />
           <Route path='/app/recs' component={Chatpage} />

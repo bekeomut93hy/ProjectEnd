@@ -6,7 +6,7 @@ class itemketdoi extends Component {
     }
     render() {
         return (
-            <div className="col-12 animated fadeIn row">
+            <div className="col-12 my-2 animated fadeIn row d-flex justify-content-between">
                 {
                    Array.from(this.state.listItem).map((item,index)=>{
                       return  <ImageItem key={index} user={item} />

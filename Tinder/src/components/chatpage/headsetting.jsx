@@ -6,8 +6,6 @@ import { BrowserRouter as Router, withRouter, Link, Route } from "react-router-d
 class headsetting extends Component {
     render() {
         return (
-            <Router>
-              
                     <div id="Headsetting" className="col-sm-12 col-md-3">
                         <div className="row align-items-center ">
                             <div onClick={this.props.handleGoBack} className="col-2">
@@ -17,7 +15,7 @@ class headsetting extends Component {
                             </div>
 
                             <div className="col-2">
-                                <img className="rounded-circle" src={this.props.state.avatarUrl} alt="Unknown" />
+                                <img className="rounded-circle" src={this.props.state.avatarUrl[0]} alt="Unknown" />
                             </div>
                             <div className="col-8">
                                 <Link to="/app/profile" className="text-decoration-none" >
@@ -56,7 +54,6 @@ class headsetting extends Component {
                             />)
                         }} />
                     </div>
-            </Router>
         );
     }
 }

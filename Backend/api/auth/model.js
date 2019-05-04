@@ -9,7 +9,10 @@ const user = new Schema({
   gender: String,
   school: String,
   avatarUrl: Array,
-  contact: String,
+  contact: {
+    type : String,
+    default : null
+  },
   fbId: String,
   createdAt: {
     type: Date,
