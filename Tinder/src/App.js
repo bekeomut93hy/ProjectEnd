@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "../node_modules/animate.css"
 import "../node_modules/font-awesome/css/font-awesome.css"
+import "../node_modules/hover.css"
 //import logo from './logo.svg';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Homepage from './pages/homepage';
@@ -30,9 +31,12 @@ class App extends Component {
       <div className="App">
         <BrowserRouter>
           <Route exact path='/' render={() => {
-            return (this.state.isLoggin === true ? <Redirect to='/app' /> : <Homepage />)
+            return (this.state.isLoggin === true ? <Redirect to='/app/recs' /> : <Homepage />)
           }} />
-          <Route path='/app' component={Chatpage} />
+           <Route exact path='/app' render={() => {
+            return (this.state.isLoggin === true ? <Redirect to='/app/recs' /> : <Homepage />)
+          }} />
+          <Route path='/app/recs' component={Chatpage} />
         </BrowserRouter>
       </div>
     );

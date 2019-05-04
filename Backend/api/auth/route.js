@@ -3,7 +3,6 @@ const router = express.Router();
 const Nexmo = require("nexmo");
 const UserModel = require("./model")
 const FB = require('fb');
-const Axios = require('axios')
 const nexmo = new Nexmo({
     apiKey: '7f1a9393',
     apiSecret: 'HG21oDgHWTfVvmnK'
@@ -46,17 +45,15 @@ router.post("/loginfb", async (req, res) => {
                 'GET',
                 { "fields": "gender,birthday" },
                 async function (response) {
-                    console.log(response);
                     const newUser = await UserModel.create({
                         accessToken: req.body.userFb.accessToken,
                         name: req.body.userFb.name,
                         fbId: req.body.userFb.fbId,
                         email: req.body.userFb.email,
-                        avatarUrl: req.body.userFb.avatarUrl,
+                        avatarUrl: [req.body.userFb.avatarUrl],
                         gender: response.gender,
-                        birthday: response.birthday
+                        birthday: new Date(response.birthday)
                     });
-                    console.log(newUser);
                     req.session.user = {
                         _id: newUser._id
                     };
@@ -176,5 +173,57 @@ router.get("/getAgeandGender", (req, res) => {
             res.status(200).json(response);
         }
     );
+})
+//edit Profile
+router.post("/editProfile", async (req, res) => {
+    await UserModel.updateOne({ _id: req.body._id }, { $set: { introduce: req.body.introduce, school: req.body.school, gender: req.body.gender } });
+    res.status(201).json({ message: "OK" });
+})
+// upload image
+router.post("/uploadImage" , async (req,res)=>{
+    try {
+        const url = req.body.url;
+        const userId = req.session.user._id;
+        await UserModel.updateOne({_id : userId}, {$push:{avatarUrl : url}})
+        res.status(201).json({message : "OK"});
+    } catch (error) {
+        res.status(501).end(error);
+    }
+})
+// delete image 
+router.post("/deleteImage" , async (req,res)=>{
+    try {
+        const url = req.body.url;
+        const userId = req.session.user._id;
+        await UserModel.updateOne({_id : userId }, {$pull:{avatarUrl : url}})
+        res.status(201).json({message : "OK"});
+    } catch (error) {
+        res.status(501).end(error);
+    }
+})
+// get Info People
+router.get("/getInfoPeople", async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+        const THArray = new Array();
+        const userArray = new Array();
+        const Like = await UserModel.findById(userId, 'Like');
+        const Liked = await UserModel.findById(userId, 'Liked');
+        const LikeArray = Array.from(Like.Like).map(item => item.id);
+        const LikedArray = Array.from(Liked.Liked).map(item => item.id);
+        for (let i = 0; i < LikeArray.length; ++i)
+            for (let j = 0; j < LikedArray.length; ++j){
+                if(LikeArray[i]===LikedArray[j]){
+                    THArray.push(LikeArray[i]);
+                }
+            }
+        for(let i=0;i<THArray.length;++i){
+            const user = await UserModel.findById(THArray[i],"name birthday introduce school avatarUrl gender contact");
+            userArray.push(user)
+        }
+        res.status(200).send(JSON.stringify(userArray));
+    } catch (error) {
+        res.status(500).end(error.message);
+    }
 })
 module.exports = router;

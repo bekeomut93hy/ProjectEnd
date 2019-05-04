@@ -24,7 +24,7 @@ class navbar extends Component {
                     </ul>
                 </div>
                 {
-                    this.props.mode === false ? <ItemKetdoi /> : <ItemMes />
+                    this.props.mode === false ? <ItemKetdoi state={this.props.state}/> : <ItemMes/>
                 }
             </div>
         );

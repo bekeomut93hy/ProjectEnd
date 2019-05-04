@@ -29,7 +29,7 @@ class Buttonlogin extends Component {
                 userFb: this.state
             }
         }).then((res)=>{
-            this.props.history.push("/app");
+            this.props.history.push("/app/recs");
         }).catch(err=>{
             console.log(err);
         })

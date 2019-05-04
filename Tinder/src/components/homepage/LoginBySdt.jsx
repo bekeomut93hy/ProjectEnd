@@ -54,7 +54,7 @@ class LoginContactTable extends Component {
                     }).then(async res => {
                         if(res.data.success){
                             await swal("OTP Correct", "Ấn OK để khám phá nào", "success");
-                            this.props.history.push("/app");
+                            this.props.history.push("/app/recs");
                         }
                         else{
                             swal("OTP Incorrect", "Ấn OK để khám phá nào", "error");

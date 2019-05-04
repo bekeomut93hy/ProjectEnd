@@ -7,9 +7,8 @@ const user = new Schema({
   introduce: String,
   accessToken : String,
   gender: String,
-  title: String,
   school: String,
-  avatarUrl: String,
+  avatarUrl: Array,
   contact: String,
   fbId: String,
   createdAt: {
@@ -26,8 +25,8 @@ const user = new Schema({
     required: true,
     default: false
   },
-  Like: [{ id: { type: mongoose.Schema.Types.ObjectId, ref: "user" }, date: Date }],
-  Liked: [{ id: { type: mongoose.Schema.Types.ObjectId, ref: "user" }, date: Date }],
+  Like: [{ id: String, date: Date }],
+  Liked: [{ id: String, date: Date }],
 });
 const UserModel = mongoose.model('User', user);
 module.exports = UserModel;
