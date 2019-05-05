@@ -8,7 +8,7 @@ import { async } from '@firebase/util';
 class editprofile extends Component {
     state = {
         upload: false,
-        deleteImage : null,
+        deleteImage: null,
     }
     _handleAddImage = () => {
         Swal.fire({
@@ -28,28 +28,30 @@ class editprofile extends Component {
                         url: "http://localhost:3001/auth/uploadImage",
                         withCredentials: true,
                         method: "post",
-                        data : {
-                          url : url
+                        data: {
+                            url: url
                         }
-                      }).then(res=>{
+                    }).then(res => {
                         console.log("OK");
-                      }).catch(err=>{
+                    }).catch(err => {
                         console.log(err);
                     });
-                 })
+                })
             },
             allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
-            Swal.fire({
-                type: 'success',
-                title: 'Thành công',
-                text: 'Tải ảnh lên thành công',
-              })
+            if (result.value) {
+                Swal.fire({
+                    type: 'success',
+                    title: 'Thành công',
+                    text: 'Tải ảnh lên thành công',
+                })
+            }
         })
     }
-    _handleDeleteImage =async (evt) => {
+    _handleDeleteImage = async (evt) => {
         await this.setState({
-            deleteImage : evt.target.src
+            deleteImage: evt.target.src
         })
         Swal.fire({
             title: 'Bạn chắc chắn chứ?',
@@ -65,12 +67,12 @@ class editprofile extends Component {
                 url: "http://localhost:3001/auth/deleteImage",
                 withCredentials: true,
                 method: "post",
-                data : {
-                  url : this.state.deleteImage
+                data: {
+                    url: this.state.deleteImage
                 }
-            }).then((res)=>{
+            }).then((res) => {
                 console.log("ok");
-            }).catch(err=>{
+            }).catch(err => {
                 console.log(err);
             })
             console.log(this.state.deleteImage);
@@ -124,7 +126,7 @@ class editprofile extends Component {
             width: "90%"
         }
         return (
-            <div style={styleMenu}>
+            <div className="animated fadeIn" style={styleMenu}>
                 <div className="d-flex justify-content-around align-items-center text-center flex-wrap mt-1">
                     {
                         Array.from(this.props.state.avatarUrl).map((item, index) => {
@@ -136,7 +138,7 @@ class editprofile extends Component {
                     <div onClick={this._handleAddImage} style={{ width: "30%" }}>
                         <img style={styleItem} src="http://meetdev.com/assets/img/icon-user-default.png" alt="abc" />
                     </div>
-             
+
                 </div>
                 {
                     this.state.upload === true ? <UploadImage userId={this.props.state._id} /> : null
@@ -146,7 +148,9 @@ class editprofile extends Component {
                         <p> Giới thiệu {this.props.state.name}</p>
                     </div>
                     <div className="col-12">
-                        <textarea id="introduce" maxLength="500" style={{ width: '100%', height: '45px' }}></textarea>
+                        <div class="input-group">
+                            <textarea id="introduce" maxLength="500" defaultValue={this.props.state.introduce} className="form-control" aria-label="With textarea"></textarea>
+                        </div>
                     </div>
                 </div>
                 <div className="row">
@@ -154,7 +158,9 @@ class editprofile extends Component {
                         <p> Trường </p>
                     </div>
                     <div className="col-12">
-                        <input id="school" className="col-12" defaultValue="Trường" />
+                        <div className="input-group input-group-sm mb-3">
+                            <input id="school" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                        </div>
                     </div>
                 </div>
                 <div className="row">
@@ -162,7 +168,10 @@ class editprofile extends Component {
                         <p> Giới tính </p>
                     </div>
                     <div className="col-12">
-                        <input id="gender" className="col-12" placeholder={this.props.state.usergender} />
+                        <select id="gender" className="custom-select custom-select-sm">
+                            <option selected value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
                     </div>
                 </div>
                 <button onClick={this.EditProfile} className="my-4 text-white btn btn-grad text-center btn-lg col-3 mx-auto register d-sm-none d-md-block"> Lưu </button>

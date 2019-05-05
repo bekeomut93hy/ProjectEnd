@@ -10,7 +10,7 @@
   display: none;
 }
 .form-switch input:checked + i {
-  background-color: #4bd763;
+  background-color:  #fd267d;
 }
 .form-switch i {
   position: relative;

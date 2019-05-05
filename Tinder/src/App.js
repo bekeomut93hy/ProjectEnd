@@ -12,7 +12,7 @@ class App extends Component {
   state = {
     isLoggin: false
   }
-  componentDidMount() {
+  componentWillMount() {
     Axios({
       url: "http://localhost:3001/auth/isLoggin",
       withCredentials: true,
@@ -27,7 +27,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div className="App">
         <BrowserRouter>
@@ -38,6 +37,8 @@ class App extends Component {
             return (this.state.isLoggin === true ? <Redirect to='/app/recs' /> : <Homepage />)
           }} />
           <Route path='/app/recs' component={Chatpage} />
+          <Route path='/app/profile' component={Chatpage} />
+          <Route path='/app/setting' component={Chatpage} />
         </BrowserRouter>
       </div>
     );

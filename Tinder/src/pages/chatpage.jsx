@@ -4,6 +4,7 @@ import RightSide from "../components/chatpage/rightSide"
 import { BrowserRouter as Router, withRouter } from "react-router-dom"
 import Axios from 'axios';
 import "../css/chatpage.css"
+import { async } from '@firebase/util';
 class chatpage extends Component {
     state = {
         _id: '',
@@ -14,6 +15,7 @@ class chatpage extends Component {
         age: '',
         introduce: '',
         school: '',
+        verify: null,
         usergender: '',
         gender: null,
         infoModeMess: null,
@@ -24,11 +26,12 @@ class chatpage extends Component {
             url: "http://localhost:3001/auth/getId",
             withCredentials: true,
             method: "get",
-        }).then((res) => {
+        }).then(async (res) => {
             const current = new Date().getFullYear();
             const birth = new Date(res.data.user.birthday).getFullYear();
-            this.setState({
+            await this.setState({
                 _id: res.data.user._id,
+                verify : res.data.user.verify,
                 name: res.data.user.name,
                 email: res.data.user.email,
                 introduce: res.data.user.introduce,
@@ -87,8 +90,8 @@ class chatpage extends Component {
             url: "http://localhost:3001/auth/logout",
             withCredentials: true,
             method: "get",
-        }).then((res) => {
-            this.props.history.push("/");
+        }).then(async (res) => {
+            await this.props.history.push("/");
         }).catch(err => {
             console.log(err);
         })
@@ -99,9 +102,7 @@ class chatpage extends Component {
         })
     }
     _handleGoBack = () => {
-
-        this.props.history.goBack();
-
+         this.props.history.goBack();
     }
     render() {
         return (

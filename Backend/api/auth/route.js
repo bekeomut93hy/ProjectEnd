@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Nexmo = require("nexmo");
 const UserModel = require("./model")
+const nodemailer = require("nodemailer")
 const FB = require('fb');
 const nexmo = new Nexmo({
     apiKey: '7f1a9393',
@@ -35,7 +36,7 @@ router.post("/loginfb", async (req, res) => {
                 _id: checkUser._id
             }
             req.session.save();
-            res.status(201).json({ message: "Exist account" });
+            res.status(201).json({ _id : checkUser._id });
         }
         else {
             const acctoken = req.body.userFb.accessToken;
@@ -58,7 +59,7 @@ router.post("/loginfb", async (req, res) => {
                         _id: newUser._id
                     };
                     req.session.save();
-                    res.status(201).json({ message: "Create account" });
+                    res.status(201).json({ _id : newUser._id });
                 }
             );
         }
@@ -145,7 +146,7 @@ router.post("/verify-account", async (req, res, next) => {
         text: `You recieved message form Main Sever`,
         html: `<h1> Link xác nhận tài khoản </h1><a href="http://localhost:3000/verify/${
             user._id
-            }">http://localhost:3000/verify/${user._id}</a> `
+            }">http://localhost:3000/app/verify/${user._id}</a> `
     };
     transporter.sendMail(mainOption, (err, info) => {
         if (err) {

@@ -2,6 +2,7 @@ body {
   background: url("https://tinder.com/static/build/087be2efe62368619a29218065a834d9.jpg")
     no-repeat center center fixed;
   background-size: cover;
+  overflow: hidden;
 }
 .loginfb {
   background: linear-gradient(260deg, #337eb9, #384499);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import {withRouter} from 'react-router-dom';
 class genderSetting extends Component {
     handleChangeGender = (a) => {
         this.props.handleChangeGender(a);
@@ -24,4 +24,4 @@ class genderSetting extends Component {
     }
 }
 
-export default genderSetting;
+export default withRouter(genderSetting);

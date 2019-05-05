@@ -12,7 +12,6 @@ class Buttonlogin extends Component {
         avatarUrl: '',
     }
     responseFacebook = async response => {
-        console.log(response);
         this.setState({
             accessToken : response.accessToken,
             isLoggedIn: true,
@@ -28,7 +27,7 @@ class Buttonlogin extends Component {
             data: {
                 userFb: this.state
             }
-        }).then((res)=>{
+        }).then(async (res)=>{
             this.props.history.push("/app/recs");
         }).catch(err=>{
             console.log(err);
